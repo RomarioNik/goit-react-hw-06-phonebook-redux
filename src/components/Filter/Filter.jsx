@@ -1,32 +1,40 @@
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   InputFilter,
   FilterWrapper,
   ButtonFilter,
   Cross,
 } from './Filter.styled';
+import { filterChange, filterReset } from 'redux/actions';
+import { getFilter } from 'redux/selectors';
 
-const Filter = ({ value, onFilterChange, onFilterReset }) => {
+const Filter = () => {
+  const filterValue = useSelector(getFilter);
+
+  const dispatch = useDispatch();
+
+  const handleFilterChange = ({ target: { value } }) => {
+    dispatch(filterChange(value));
+  };
+
+  const handleFilterReset = () => {
+    dispatch(filterReset());
+  };
+
   return (
     <FilterWrapper>
       <InputFilter
         type="text"
         name="filter"
-        value={value}
-        onChange={onFilterChange}
+        value={filterValue}
+        onChange={handleFilterChange}
         placeholder="Search contact's name"
       />
-      <ButtonFilter type="button" onClick={onFilterReset}>
+      <ButtonFilter type="button" onClick={handleFilterReset}>
         <Cross></Cross>
       </ButtonFilter>
     </FilterWrapper>
   );
-};
-
-Filter.propTypes = {
-  value: PropTypes.string.isRequired,
-  onFilterChange: PropTypes.func.isRequired,
-  onFilterReset: PropTypes.func.isRequired,
 };
 
 export default Filter;

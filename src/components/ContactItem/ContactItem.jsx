@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { deleteContact } from '../../redux/actions';
 
 import {
   ListItem,
@@ -11,9 +13,10 @@ import {
   IconTrash,
 } from './ContactItem.styled';
 
-const ContactItem = ({ id, name, number, onDeleteContact }) => {
+const ContactItem = ({ id, name, number }) => {
+  const dispatch = useDispatch();
   return (
-    <ListItem key={id}>
+    <ListItem>
       <AvatarWrapper>
         <Avatar />
       </AvatarWrapper>
@@ -23,7 +26,7 @@ const ContactItem = ({ id, name, number, onDeleteContact }) => {
         <Phone>{number}</Phone>
       </Contact>
 
-      <TrashButton onClick={() => onDeleteContact(id)}>
+      <TrashButton onClick={() => dispatch(deleteContact(id))}>
         <IconTrash />
       </TrashButton>
     </ListItem>
@@ -34,7 +37,6 @@ ContactItem.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   number: PropTypes.string.isRequired,
-  onDeleteContact: PropTypes.func.isRequired,
 };
 
 export default ContactItem;

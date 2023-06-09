@@ -1,10 +1,19 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import { Form, InputContact, Button } from './ContactForm.styled';
+import { addContact } from 'redux/actions';
+import { getContacts } from 'redux/selectors';
 
-const ContactForm = ({ onAddContact }) => {
+const checkDuplicateName = (contacts, nameContact) => {
+  return contacts.some(({ name }) => name === nameContact);
+};
+
+const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
 
   const handleChangeInputName = ({ target: { value } }) => {
     setName(value);
@@ -16,7 +25,15 @@ const ContactForm = ({ onAddContact }) => {
 
   const handleSubmitForm = e => {
     e.preventDefault();
-    onAddContact({ name, number }, resetForm);
+    const isContactName = checkDuplicateName(contacts, name);
+
+    if (isContactName) {
+      alert(`${name} is already in contacts`);
+      return;
+    }
+
+    dispatch(addContact({ name, number }));
+    resetForm();
   };
 
   const resetForm = () => {
@@ -48,13 +65,9 @@ const ContactForm = ({ onAddContact }) => {
         required
       />
 
-      <Button>Add contact</Button>
+      <Button type="submit">Add contact</Button>
     </Form>
   );
-};
-
-ContactForm.propTypes = {
-  onAddContact: PropTypes.func.isRequired,
 };
 
 export default ContactForm;
